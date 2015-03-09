@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+.counties {
+  fill: none;
+}
+
+.gridmap-container {
+}
+
+#gridmap {
+  width: 960px;
+  height: 600px;
+}
+
+.gridclass {
+  fill: #131313;
+  stroke-width: 0;
+}
+
+.mapclass {
+  fill-opacity: 0;
+  stroke-width: 0;
+}
+
+.gridmap-container {
+  position: relative;
+}
+
+@media screen and (max-width: 640px) {
+  #gridmap {
+    width: 320px;
+    height: 200px;
+  }
+}
+
+</style>
+<body>
+<div class="gridmap-container">
+  <div id="gridmap"></div>
+</div>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://d3js.org/queue.v1.min.js"></script>
+<script src="http://d3js.org/topojson.v1.min.js"></script>
+<script src="gridmap.js"></script>
+<script>
+
+width = +d3.select("#gridmap").style("width").slice(0, -2);
+height = +d3.select("#gridmap").style("height").slice(0, -2);
+
+var projection = d3.geo.albersUsa()
+    .scale(1280/960 * width)
+    .translate([width / 2, height / 2]);
+
+queue()
+    .defer(d3.json, "us.json")
+    .await(ready);
+
+getRandomInt = function(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
+function ready(error, us) {
+
+  var features =  topojson.feature(us, us.objects.counties).features;
+  var data = d3.map();
+  var j;
+  for (j = 0, len = features.length; j < len; j++) {
+    data.set(features[j]["id"], getRandomInt(1,5));
+  }
+
+  chart = gridmap()
+      .data(data)
+      .width(width)
+      .height(height)
+      .isquantity(false)
+      .projection(projection)
+      .features(features)
+      .mapclass("mapclass")
+      .gridclass("gridclass");
+  
+  d3.select("#gridmap").call(chart);
+
+}
+
+</script>
