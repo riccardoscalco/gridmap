@@ -1,4 +1,5 @@
 root = exports ? this
+
 root.gridmap = () ->
 
   # ---- Default Values ------------------------------------------------

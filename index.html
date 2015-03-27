@@ -21,7 +21,14 @@
 
 .mapclass {
   fill-opacity: 0;
-  stroke-width: 0;
+  stroke-opacity: 0;
+  stroke-width: 1;
+  stroke: #000;
+}
+
+.newmapclass {
+  fill-opacity: 0;
+  stroke-width: 1;
 }
 
 .gridmap-container {
@@ -40,10 +47,12 @@
 <div class="gridmap-container">
   <div id="gridmap"></div>
 </div>
+<div id="newmap"></div>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="http://d3js.org/queue.v1.min.js"></script>
 <script src="http://d3js.org/topojson.v1.min.js"></script>
-<script src="gridmap.js"></script>
+<script src="lib.js"></script>
+
 <script>
 
 width = +d3.select("#gridmap").style("width").slice(0, -2);
@@ -74,6 +83,7 @@ function ready(error, us) {
       .data(data)
       .width(width)
       .height(height)
+      .side(5)
       .isquantity(false)
       .projection(projection)
       .features(features)
