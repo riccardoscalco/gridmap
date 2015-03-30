@@ -1,9 +1,18 @@
 Gridmap
 =======
 
-This is an attempt to create dot-grid maps with **d3.js**.
-
 ![enter image description here](https://lh3.googleusercontent.com/UU7MLms-Z3fMRoRdEhT7Y1Z4KSHqXE66gyzBwxLJYDI=s0 "gridmap")
+
+This is an attempt to create dot grid maps with **d3.js**.
+
+Dot grid maps could also be done with [Kartograph](http://kartograph.org/), Gregor Aisch's description of what is a dot grid map is neat and there is no need do write something different:
+
+> In 1967, the French cartographer Jaques Bertin suggested the use of graduated sizes in a regular pattern as alternative to chroropleth maps.
+
+>The most notable advantage is that one no longer need to choose between showing the *quantity* or *density* of a distribution, since the regular pattern shows both at the same time: You can compare the *density* by looking at individual circles while still getting an impression of the total *quantity* for each department.
+
+For further details refer to *Semiology of Graphics*, by Jacques Bertin.
+
 
 --------------------
 
