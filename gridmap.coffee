@@ -20,22 +20,40 @@ subGrid = (box,side) ->
   else
     []
 
+isInside = (point, vs) ->
+  # ray-casting algorithm based on
+  # http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
+  x = point[0]
+  y = point[1]
+  inside = false
+  j = vs.length - 1
+  for i in [0..vs.length-1]
+    xi = vs[i][0]
+    yi = vs[i][1]
+    xj = vs[j][0]
+    yj = vs[j][1]
+    intersect = ((yi > y) isnt (yj > y)) and 
+      (x < (xj - xi) * (y - yi) / (yj - yi) + xi)
+    if intersect then inside = !inside
+    j = i
+  inside
+
 # end helper functions -------------------------------------------------
 
 root.gridmap = () ->
 
   # ---- Default Values ------------------------------------------------
-
+  
   projection = undefined    # d3.geo projection
-  side = 10                 # side of the cells in pixel
-  key = "id"                # name of the attribute mapping features to data          
   data = undefined          # d3.map() mapping key to data
   features = undefined      # array of map features
+  isDensity = undefined     # set to `true` if data define a density
+
+  side = 10                 # side of the cells in pixel
+  key = "id"                # name of the attribute mapping features to data
   width = 500
   height = 500
-  isquantity = undefined    # 
-  gridclass = "gridclass"
-  mapclass = "mapclass"
+  fill = "#343434"
 
   grid = d3.map()
 
@@ -47,46 +65,31 @@ root.gridmap = () ->
     h = height
 
     path = d3.geo.path()
-      .projection(projection)
+      .projection projection
 
     radius = d3.scale.linear()
-      .range([0, side / 2 * 0.9])
+      .range [0, side / 2 * 0.9]
         
-    # Using `document.elementFromPoint` the specified point must be
-    # inside the visible bounds of the document.
-    # Original style will be restored after the gridmap is done.
-    backup = {
-      "position": selection.style("position")
-      "top": selection.style("top")
-      "left": selection.style("left")
-      "opacity": selection.style("opacity")
-    }
-    selection.style({
-      "position": "fixed"
-      "top": 0
-      "left": 0
-      "opacity": 0
-    })
-
     area = d3.map()
     centroid = d3.map()
     for f in features
-      area.set(f[key], path.area(f) / (w * h))
-      #c = path.centroid(f)
-      #if c then centroid.set(f[key], c)
+      area.set f[key], path.area(f) / (w * h)
 
-    svg = selection.append("svg")
-        .attr("width", w)
-        .attr("height", h)
-        .attr("viewBox", "0 0 "+w+" "+h)
+    svg = selection
+        .append "svg"
+        .attr "width", w
+        .attr "height", h
+        .attr "viewBox", "0 0 "+w+" "+h
 
-    map = svg.append("g")
-    map.selectAll("path")
-        .data(features)
-      .enter().append("path")
-      .attr("class", mapclass)
-        .attr("data-key", (d) -> d[key] )
-      .attr("d", path)
+    map = svg
+        .append "g"
+
+    map.selectAll "path"
+        .data features 
+      .enter()
+        .append "path"
+        .style "opacity", 0
+        .attr "d", path
 
     # define the grid
     for f in features
@@ -96,43 +99,54 @@ root.gridmap = () ->
         points = subGrid box, side
         value = [f[key]]
         if points.length
-          polygon = flat(g.type, g.coordinates)
+          polygon = flat g.type, g.coordinates
           for [i,j] in points
             x = side * i
             y = side * j
             coords = projection.invert [x, y]
             ii = isInside coords, polygon
             if ii
-              grid.set(i+","+j, {keys: value, x: x, y: y})
+              grid.set i+","+j, {keys: value, x: x, y: y}
         else
-          c = path.centroid(f)
-          if c then centroid.set(f[key], c)
+          c = path.centroid f 
+          if c then centroid.set f[key], c
 
     # add not hitted features to the nearest cell
-    centroid.forEach((k,v) ->
-      i = Math.floor(v[0] / side)
-      j = Math.floor(v[1] / side)
+    centroid.forEach (k, v) ->
+      i = Math.floor v[0] / side
+      j = Math.floor v[1] / side
       try
         grid.get(i+","+j).keys.push(k)
-    )
 
     density = (a) ->
-      if isquantity
-      then num = d3.sum((data.get(j) for j in a))
-      else num = d3.sum((data.get(j) * area.get(j) for j in a))
-      den = d3.sum((area.get(j) for j in a))
+      if isDensity
+      then num = d3.sum ( data.get(j) * area.get(j) for j in a )
+      else num = d3.sum ( data.get(j)  for j in a )
+      den = d3.sum ( area.get(j) for j in a )
       if den then num / den else 0
 
-    dataGrid = ( { value: density(k.keys), x: k.x, y: k.y } for k in grid.values() when k.keys.length)
-    dots = map.selectAll(gridclass).data(dataGrid)
-    radius.domain([0, d3.max(dataGrid, (d) -> Math.sqrt(d.value))])
-    dots.enter().append("circle")
-        .attr("cx", (d) -> d.x)
-        .attr("cy", (d) -> d.y)
-        .attr("r", (d) -> radius(Math.sqrt(d.value)))
-        .attr("class", gridclass)
+    dataGrid = ( {
+      value: density(k.keys)
+      x: k.x
+      y: k.y 
+    } for k in grid.values() when k.keys.length )
+    
+    dots = map
+      .selectAll ".gridmap-dot"
+      .data dataGrid
+    
+    radius
+      .domain [ 0, d3.max dataGrid, (d) -> Math.sqrt d.value ]
+ 
+    # enter
+    dots.enter()
+        .append "circle"
+        .attr "class", "gridmap-dot"
+        .attr "cx", (d) -> d.x
+        .attr "cy", (d) -> d.y
+        .attr "r", (d) -> radius Math.sqrt d.value
+        .style "fill", fill
 
-    selection.style(backup)
 
   # ---- Getter/Setter Methods -----------------------------------------
 
@@ -156,8 +170,8 @@ root.gridmap = () ->
     data = _
     chart
 
-  chart.isquantity = (_) ->
-    isquantity = _
+  chart.isDensity = (_) ->
+    isDensity = _
     chart
 
   chart.features = (_) ->
@@ -168,12 +182,8 @@ root.gridmap = () ->
     projection = _
     chart
 
-  chart.gridclass = (_) ->
-    gridclass = _
-    chart 
-
-  chart.mapclass = (_) ->
-    mapclass = _
+  chart.fill = (_) ->
+    fill = _
     chart 
 
   # --------------------------------------------------------------------
