@@ -5,7 +5,7 @@ Gridmap
 
 This is an attempt to create dot grid maps with **d3.js**.
 
-Dot grid maps could also be done with [Kartograph](http://kartograph.org/), Gregor Aisch's description of what is a dot grid map is neat and there is no need to write something different:
+Dot grid maps could also be done with [Kartograph](http://kartograph.org/) and Gregor Aisch wrote a neat description of what a dot grid map is:
 
 > In 1967, the French cartographer Jaques Bertin suggested the use of graduated sizes in a regular pattern as alternative to chroropleth maps.
 
@@ -36,13 +36,13 @@ For further details refer to *Semiology of Graphics*, by Jacques Bertin.
 ----------------------
 
 ### Notes
-- `data` is a `d3.map()` object linking feature names (`key`) to the associated data. It can be passed in the form of *quantity of population* (`q`) or in the form of *density of population* (`d`), setting `isDensity` to `false` or `true` respectively.
+- `data` is a `d3.map()` object linking feature names (`key`) to the associated data. It can be passed in the form of *quantity distribution* (`q`) or in the form of *density distribution* (`d`), setting `isDensity` to `false` or `true` respectively.
 -  `key` is the attribute that identifies the feature (usually an `id`).
 -  `side` is the maximum grid-dot diameter in pixel.
 -  `projection` is a ` d3.geo.projection`. Use [equal-area](http://en.wikipedia.org/wiki/Map_projection#Equal-area) projections, dotgrid maps assume the projection preserves area measure.
 - some map features may be not covered by any grid-dot, in that case the function adds the features data to the grid-dot nearest to the feature centroid. The density value associated to the grid-dot is calculated as: 
-    - `sum(d * A)/sum(A)` in the case data si passed as *density of population*
-    - `sum(q)/sum(A)` in the case data si passed as *quantity of population*
+    - `sum(d * A)/sum(A)` in the case data si passed as *density distribution*
+    - `sum(q)/sum(A)` in the case data si passed as *quantity distribution*
 where  `A` is the feature area and the summation runs over the list of features associated to the grid-dot.
 
 
