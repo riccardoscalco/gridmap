@@ -5,7 +5,7 @@ Gridmap
 
 This is an attempt to create dot grid maps with **d3.js**.
 
-Dot grid maps could also be done with [Kartograph](http://kartograph.org/), Gregor Aisch's description of what is a dot grid map is neat and there is no need do write something different:
+Dot grid maps could also be done with [Kartograph](http://kartograph.org/), Gregor Aisch's description of what is a dot grid map is neat and there is no need to write something different:
 
 > In 1967, the French cartographer Jaques Bertin suggested the use of graduated sizes in a regular pattern as alternative to chroropleth maps.
 
