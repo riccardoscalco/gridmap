@@ -64,10 +64,10 @@ root.gridmap = () ->
     w = width
     h = height
 
-    path = d3.geo.path()
+    path = d3.geoPath()
       .projection projection
 
-    radius = d3.scale.linear()
+    radius = d3.scaleLinear()
       .range [0, side / 2 * 0.9]
         
     area = d3.map()
@@ -112,7 +112,7 @@ root.gridmap = () ->
           if c then centroid.set f[key], c
 
     # add not hitted features to the nearest cell
-    centroid.forEach (k, v) ->
+    centroid.each (k, v) ->
       i = Math.floor v[0] / side
       j = Math.floor v[1] / side
       try
