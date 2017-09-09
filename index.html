@@ -5,9 +5,9 @@
   <div id="gridmap"></div>
 </body>
 
-<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://d3js.org/d3.v4.min.js"></script>
 <script src="http://d3js.org/queue.v1.min.js"></script>
-<script src="http://d3js.org/topojson.v1.min.js"></script>
+<script src="http://d3js.org/topojson.v3.min.js"></script>
 <script src="gridmap.js"></script>
 
 <script>
@@ -15,7 +15,7 @@
 width = 960;
 height = 600;
 
-var projection = d3.geo.albersUsa()
+var projection = d3.geoAlbersUsa()
     .scale(1280/960 * width)
     .translate([width / 2, height / 2]);
 

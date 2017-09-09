@@ -94,8 +94,8 @@
       var area, box, c, centroid, coords, dataGrid, density, dots, f, g, h, i, ii, j, k, map, path, points, polygon, radius, svg, value, w, x, y, _i, _j, _k, _len, _len1, _len2, _ref, _ref1;
       w = width;
       h = height;
-      path = d3.geo.path().projection(projection);
-      radius = d3.scale.linear().range([0, side / 2 * 0.9]);
+      path = d3.geoPath().projection(projection);
+      radius = d3.scaleLinear().range([0, side / 2 * 0.9]);
       area = d3.map();
       centroid = d3.map();
       for (_i = 0, _len = features.length; _i < _len; _i++) {
@@ -136,7 +136,7 @@
           }
         }
       }
-      centroid.forEach(function(k, v) {
+      centroid.each(function(k, v) {
         i = Math.floor(v[0] / side);
         j = Math.floor(v[1] / side);
         try {
