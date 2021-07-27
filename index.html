@@ -5,8 +5,9 @@
   <div id="gridmap"></div>
 </body>
 
-<script src="http://d3js.org/d3.v4.min.js"></script>
-<script src="http://d3js.org/queue.v1.min.js"></script>
+<!-- <script src="http://d3js.org/d3.v4.min.js"></script> -->
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<!-- <script src="http://d3js.org/queue.v1.min.js"></script> -->
 <script src="http://d3js.org/topojson.v3.min.js"></script>
 <script src="gridmap.js"></script>
 
@@ -15,25 +16,26 @@
 width = 960;
 height = 600;
 
-var projection = d3.geoAlbersUsa()
+let projection = d3.geoAlbersUsa()
     .scale(1280/960 * width)
     .translate([width / 2, height / 2]);
 
-queue()
-    .defer(d3.json, "us.json")
-    .await(ready);
+fetch("us.json")
+  .then(r => r.json())
+  .then(ready);
 
 getRandomInt = function(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
-function ready(error, us) {
+// function ready(error, us) {
+function ready(us, error) {
 
-  var features =  topojson.feature(us, us.objects.counties).features;
+  let features =  topojson.feature(us, us.objects.counties).features;
   
   // generate some random data
-  var data = d3.map(); // data is a d3.map !!
-  var j;
+  let data = new Map();
+  let j;
   for (j = 0, len = features.length; j < len; j++) {
     data.set(features[j]["id"], getRandomInt(1,5));
   }

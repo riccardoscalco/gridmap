@@ -55,7 +55,7 @@ root.gridmap = () ->
   height = 500
   fill = "#343434"
 
-  grid = d3.map()
+  grid = new Map()
 
   # --------------------------------------------------------------------
 
@@ -70,8 +70,8 @@ root.gridmap = () ->
     radius = d3.scaleLinear()
       .range [0, side / 2 * 0.9]
         
-    area = d3.map()
-    centroid = d3.map()
+    area = new Map()
+    centroid = new Map()
     for f in features
       area.set f[key], path.area(f) / (w * h)
 
@@ -112,7 +112,7 @@ root.gridmap = () ->
           if c then centroid.set f[key], c
 
     # add not hitted features to the nearest cell
-    centroid.each (k, v) ->
+    centroid.forEach (v, k) ->
       i = Math.floor v[0] / side
       j = Math.floor v[1] / side
       try
@@ -129,7 +129,7 @@ root.gridmap = () ->
       value: density(k.keys)
       x: k.x
       y: k.y 
-    } for k in grid.values() when k.keys.length )
+    } for k in Array.from(grid.values()) when k.keys.length )
     
     dots = map
       .selectAll ".gridmap-dot"
