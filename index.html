@@ -5,9 +5,7 @@
   <div id="gridmap"></div>
 </body>
 
-<!-- <script src="http://d3js.org/d3.v4.min.js"></script> -->
 <script src="https://d3js.org/d3.v7.min.js"></script>
-<!-- <script src="http://d3js.org/queue.v1.min.js"></script> -->
 <script src="http://d3js.org/topojson.v3.min.js"></script>
 <script src="gridmap.js"></script>
 
@@ -28,7 +26,6 @@ getRandomInt = function(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
-// function ready(error, us) {
 function ready(us, error) {
 
   let features =  topojson.feature(us, us.objects.counties).features;
